@@ -17,8 +17,8 @@ namespace NFePHP\NFSeGinfes;
 
 use stdClass;
 use NFePHP\NFSeGinfes\RpsInterface;
-use NFePHP\NFSeGinfes\Common\Factory;
 use JsonSchema\Validator as JsonValid;
+use NFePHP\NFSeGinfes\Common\FactoryV4;
 
 class Rps implements RpsInterface
 {
@@ -38,12 +38,12 @@ class Rps implements RpsInterface
      * @var stdClass
      */
     private $config;
-    
+
     /**
      * Constructor
      * @param stdClass $rps
      */
-    public function __construct(stdClass $rps = null)
+    public function __construct(stdClass $rps)
     {
         $this->init($rps);
     }
@@ -52,38 +52,42 @@ class Rps implements RpsInterface
      * Add config
      * @param stdClass $config
      */
-    public function config(\stdClass $config)
+    public function config(stdClass $config)
     {
         $this->config = $config;
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function render(stdClass $rps = null)
+    public function render()
     {
-        $this->init($rps);
-        $fac = new Factory($this->std);
-        if (!empty($this->config)) {
-            $fac->addConfig($this->config);
-        }
-        return $fac->render();
+				$fac = new FactoryV4($this->std);
+				if (!empty($this->config)) {
+					$fac->addConfig($this->config);
+				}
+				return $fac->render();
     }
-    
+
     /**
      * Inicialize properties and valid input
      * @param stdClass $rps
      */
-    private function init(stdClass $rps = null)
+    private function init(stdClass $rps)
     {
-        if (!empty($rps)) {
-            $this->std = $this->propertiesToLower($rps);
-            $ver = str_replace('.', '_', $rps->version);
-            $this->jsonschema = realpath("../storage/jsonSchemes/v$ver/rps.schema");
-            $this->validInputData($this->std);
+        if (count(get_object_vars($rps)) === 0) {
+            throw new \InvalidArgumentException('RPS data is required.');
         }
+        if (empty($rps->version)) {
+            throw new \InvalidArgumentException('RPS version is required.');
+        }
+
+        $this->std = $this->propertiesToLower($rps);
+        $ver = str_replace('.', '_', $rps->version);
+        $this->jsonschema = realpath(__DIR__ . "/../storage/jsonSchemes/v$ver/rps.schema");
+        $this->validInputData($this->std);
     }
-    
+
     /**
      * Change properties names of stdClass to lower case
      * @param stdClass $data

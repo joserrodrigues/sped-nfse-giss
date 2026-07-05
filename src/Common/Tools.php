@@ -42,6 +42,9 @@ class Tools
         $this->config = json_decode($config);
         $this->certificate = $cert;
         $this->wsobj = $this->loadWsobj($this->config->cmun);
+        if (!empty($this->wsobj->version)) {
+            $this->version = (string)$this->wsobj->version;
+        }
         $this->environment = 'homologacao';
         if ($this->config->tpamb === 1) {
             $this->environment = 'producao';
@@ -72,6 +75,9 @@ class Tools
     public function loadSoapClass(SoapInterface $soap)
     {
         $this->soap = $soap;
+        if (!empty($this->certificate)) {
+            $soap->loadCertificate($this->certificate);
+        }
     }
 
     public function setVersion($version)
@@ -109,7 +115,8 @@ class Tools
      */
     public function send($message, $operation)
     {
-        $action = $operation;
+        
+				$action = 'http://nfse.abrasf.org.br/' . $operation;        
         $url = $this->wsobj->homologacao;
         if ($this->environment === 'producao') {
             $url = $this->wsobj->producao;
@@ -125,11 +132,12 @@ class Tools
             $this->soap = new SoapCurl($this->certificate);
         }
         $msgSize = strlen($request);
-        $parameters = [
-            "Content-Type: application/soap+xml;charset=utf-8",
-            "SOAPAction: \"$action\"",
-            "Content-length: $msgSize"
-        ];
+				$parameters = [
+					"Content-Type: text/xml; charset=utf-8",
+					"SOAPAction: \"$action\"",
+					"Content-length: $msgSize"
+				];				
+
         $response = (string)$this->soap->send(
             $operation,
             $url,
@@ -151,6 +159,10 @@ class Tools
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = false;
         $dom->loadXML($response);
+        if (!empty($dom->getElementsByTagName('outputXML')->item(0))) {
+            $node = $dom->getElementsByTagName('outputXML')->item(0);
+            return $node->textContent;
+        }
         if (!empty($dom->getElementsByTagName('return')->item(0))) {
             $node = $dom->getElementsByTagName('return')->item(0);
             return $node->textContent;
@@ -166,34 +178,36 @@ class Tools
      */
     protected function createSoapRequest($message, $operation)
     {
-        $cabecalho = "<ns2:cabecalho versao=\"{$this->wsobj->version}\" "
-            . "xmlns:ns2=\"http://www.ginfes.com.br/cabecalho_v03.xsd\">"
-            . "<versaoDados>{$this->wsobj->version}</versaoDados>"
-            . "</ns2:cabecalho>";
+				$cabecalho = $this->createCabecalho();
+				$requestElement = $operation . 'Request';
+				$ns = 'http://nfse.abrasf.org.br';
 
-        $ns1 = "{$this->environment}_soapns";
-        $ns1 = $this->wsobj->$ns1;
+				return "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+					. "<soapenv:Header/>"
+					. "<soapenv:Body>"
+					. "<{$requestElement} xmlns=\"{$ns}\">"
+					. "<nfseCabecMsg xmlns=\"\">"
+					. $this->escapeXmlForSoapParameter($cabecalho)
+					. "</nfseCabecMsg>"
+					. "<nfseDadosMsg xmlns=\"\">"
+					. $this->escapeXmlForSoapParameter($message)
+					. "</nfseDadosMsg>"
+					. "</{$requestElement}>"
+					. "</soapenv:Body>"
+					. "</soapenv:Envelope>";
+    }
 
-        $env = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-            . "<soapenv:Header/>"
-            . "<soapenv:Body>"
-            . "<ns1:$operation xmlns:ns1=\"{$ns1}\">";
-        if ($this->version == '3') {
-            $env .= "<arg0>"
-                . $cabecalho
-                . "</arg0>"
-                . "<arg1>"
-                . $message
-                . "</arg1>";
-        } else {
-            $env .= "<arg0>"
-                . $message
-                . "</arg0>";
-        }
-        $env .= "</ns1:$operation>"
-            . "</soapenv:Body>"
-            . "</soapenv:Envelope>";
+    protected function createCabecalho()
+    {
+				return "<cabecalho versao=\"2.04\" "
+					. "xmlns=\"http://www.giss.com.br/cabecalho-v2_04.xsd\">"
+					. "<versaoDados>2.04</versaoDados>"
+					. "</cabecalho>";
 
-        return $env;
+    }
+
+    protected function escapeXmlForSoapParameter($xml)
+    {
+        return htmlspecialchars($xml, ENT_XML1 | ENT_QUOTES, 'UTF-8');
     }
 }

@@ -8,4 +8,6 @@ vendor
 nbproject
 build
 composer.lock
-
+tests/fixtures/eCNPJ_School.pfx
+.vscode/
+sped-nfse-giss.code-workspace

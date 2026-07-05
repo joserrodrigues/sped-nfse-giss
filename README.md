@@ -1,21 +1,11 @@
 # sped-nfse-ginfes
 
-Api para comunicação com webservices do Projeto NFSe Ginfes
+Api para comunicação com webservices do Projeto NFSe Giss
 
-## BETHA TESTS
+Esse projeto é um fork do original sped-nfse-ginfes [https://github.com/nfephp-org/sped-nfse-ginfes] atualizando para os XSD V4 e adicionando para o sistema GISS. Se você testar com outros municípios, fique a vontade para adicionar as URLs no arquivo urls_webservices.json.
 
+O sistema GISS é utilizado em outros municípios, mas somente testado em Santo André.
 
-[![Latest Stable Version][ico-stable]][link-packagist]
-[![Build Status][ico-travis]][link-travis]
-[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
-[![Quality Score][ico-code-quality]][link-code-quality]
-[![Latest Version on Packagist][ico-version]][link-packagist]
-[![License][ico-license]][link-packagist]
-[![Total Downloads][ico-downloads]][link-downloads]
-
-[![Issues][ico-issues]][link-issues]
-[![Forks][ico-forks]][link-forks]
-[![Stars][ico-stars]][link-stars]
 
 Este pacote é aderente com os [PSR-1], [PSR-2] e [PSR-4]. Se você observar negligências de conformidade, por favor envie um patch via pull request.
 
@@ -30,72 +20,7 @@ Não deixe de se cadastrar no [grupo de discussão do NFePHP](http://groups.goog
 
 |n|Município|UF|Ibge|
 |:---:|:---|:---:|:---:|
-|1|Amparo|SP|3501905|
-|2|Ananindeua|PA|1500800|
-|3|Araraquara|SP|3503208|
-|4|Bertioga|SP|3506359|
-|5|Betim|MG|3106705|
-|6|Campos dos Goytacazes|RJ|3301009|
-|7|Capivari|SP|3510401|
-|8|Caruaru|PE|2604106|
-|9|Cataguases|MG|3115300|
-|10|Colina|SP|3512001|
-|11|Conceicao do Mato Dentro|MG|3117504|
-|12|Contagem|MG|3118601|
-|13|Diadema|SP|3513801|
-|14|Embu-Guacu|SP|3515103|
-|15|Franca|SP|3516200|
-|16|Guararema|SP|3518305|
-|17|Guaruja|SP|3518701|
-|18|Guarulhos|SP|3518800|
-|19|Hortolandia|SP|3519071|
-|20|Itaborai|RJ|3301900|
-|21|Itajuba|MG|3132404|
-|22|Itauna|MG|3133808|
-|23|Itu|SP|3523909|
-|24|Jaboticabal|SP|3524303|
-|25|Jardinopolis|SP|3525102|
-|26|Jundiai|SP|3525904|
-|27|Lagoa Santa|MG|3137601|
-|28|Maceio|AL|2704302|
-|29|Marechal Deodoro|AL|2704708|
-|30|Marica|RJ|3302700|
-|31|Matao|SP|3529302|
-|32|Maua|SP|3529401|
-|33|Mineiros|GO|5213103|
-|34|Mococa|SP|3530508|
-|35|Morro Agudo|SP|3531902|
-|36|Muriae|MG|3143906|
-|37|Olimpia|SP|3533908|
-|38|Oliveira|MG|3145604|
-|39|Para de Minas|MG|3147105|
-|40|Paranagua|PR|4118204|
-|41|Paulinia|SP|3536505|
-|42|Porto Ferreira|SP|3540705|
-|43|Pouso Alegre|MG|3152501|
-|44|Registro|SP|3542602|
-|45|Ribeirao Pires|SP|3543303|
-|46|Ribeirao Preto|SP|3543402|
-|47|Rio Bonito|RJ|3304300|
-|48|Rio Claro|SP|3543907|
-|49|Sacramento|MG|3156908|
-|50|Salto|SP|3545209|
-|51|Santarem|PB|2513653|
-|52|Santarém|PA|1506807|
 |53|Santo Andre|SP|3547809|
-|54|Santos|SP|3548500|
-|55|Sao Bernardo do Campos|SP|3548708|
-|56|Sao Caetano do Sul|SP|3548807|
-|57|Sao Carlos|SP|3548906|
-|58|Sao Jose do Rio Preto|SP|3549805|
-|59|Sao Roque|SP|3550605|
-|60|Sao Sebastiao|SP|3550704|
-|61|Suzano|SP|3552502|
-|62|Taquaritinga|SP|3553708|
-|63|Ubatuba|SP|3555406|
-|64|Umuarama|PR|4128104|
-|65|Varginha|MG|3170701|
-|66|Votuporanga|SP|3557105|
 
 ## Dependências
 
@@ -169,7 +94,8 @@ Caso você encontre algum problema relativo a segurança, por favor envie um ema
 
 ## Credits
 
-Cleiton Perin (owner and developer)
+Jose Rubens Rodrigues (owner and developer)
+Cleiton Perin (original developer)
 
 ## License
 

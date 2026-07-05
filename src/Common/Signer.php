@@ -36,6 +36,7 @@ class Signer
      * @param int $algorithm (opcional)
      * @param array $canonical parameters to format node for signature (opcional)
      * @param string $rootname name of tag to insert signature block (opcional)
+     * @param int $nodeIndex zero-based index of tag to sign (opcional)
      * @return string
      * @throws SignerException
      */
@@ -46,7 +47,8 @@ class Signer
         $mark = 'Id',
         $algorithm = OPENSSL_ALGO_SHA1,
         $canonical = self::CANONICAL,
-        $rootname = ''
+        $rootname = '',
+        $nodeIndex = 0
     ) {
         if (empty($content)) {
             throw SignerException::isNotXml();
@@ -60,9 +62,13 @@ class Signer
         $dom->formatOutput = false;
         $root = $dom->documentElement;
         if (!empty($rootname)) {
-            $root = $dom->getElementsByTagName($rootname)->item(0);
+            $rootIndex = $nodeIndex;
+            if ($rootname === 'Rps') {
+                $rootIndex = $nodeIndex * 2;
+            }
+            $root = $dom->getElementsByTagName($rootname)->item($rootIndex);
         }
-        $node = $dom->getElementsByTagName($tagname)->item(0);
+        $node = $dom->getElementsByTagName($tagname)->item($nodeIndex);
         if (empty($node) || empty($root)) {
             throw SignerException::tagNotFound($tagname);
         }

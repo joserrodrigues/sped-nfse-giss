@@ -1,0 +1,29 @@
+FROM --platform=linux/amd64 php:7.4-apache
+
+WORKDIR /var/www/
+
+RUN apt-get update && apt-get install -y \
+    libxml2-dev \
+		libssl-dev \
+		curl \
+		zip \
+    && docker-php-ext-install soap
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+#Configure xDebug
+RUN pecl install xdebug-3.1.6
+RUN docker-php-ext-enable xdebug
+COPY conf/.xdebug.ini /usr/local/etc/php/conf.d/
+
+RUN a2dissite 000-default.conf
+RUN a2enmod rewrite
+
+RUN touch /var/log/cron.log
+
+ADD conf/start_dev.sh /var/start.sh
+RUN chmod 777  /var/start.sh
+
+# Run the command on container startup
+CMD "/var/start.sh"
+#systemctl status cron

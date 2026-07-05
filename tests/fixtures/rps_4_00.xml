@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?> 
+<EnviarLoteRpsEnvio xmlns="http://www.giss.com.br/enviar-lote-rps-envio-v2_04.xsd" xmlns:tipos="http://www.giss.com.br/tipos-v2_04.xsd" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"> 
+	    <LoteRps versao="2.04">
+	    <tipos:NumeroLote>1650</tipos:NumeroLote> 
+	    <tipos:Prestador> 
+	        <tipos:CpfCnpj> 
+	            <tipos:Cnpj>23439073000180</tipos:Cnpj> 
+	        </tipos:CpfCnpj> 
+	        <tipos:InscricaoMunicipal>233246</tipos:InscricaoMunicipal> 
+	    </tipos:Prestador> 
+	    <tipos:QuantidadeRps>1</tipos:QuantidadeRps> 
+	    <tipos:ListaRps>
+	        <tipos:Rps> 
+	            <tipos:InfDeclaracaoPrestacaoServico>
+	                <tipos:Rps> 
+	                    <tipos:IdentificacaoRps> 
+	                        <tipos:Numero>15877</tipos:Numero> 
+	                        <tipos:Serie>001</tipos:Serie> 
+	                        <tipos:Tipo>1</tipos:Tipo> 
+	                    </tipos:IdentificacaoRps>
+	                    <tipos:DataEmissao>2026-06-28</tipos:DataEmissao> 
+	                    <tipos:Status>1</tipos:Status> 
+	                </tipos:Rps>
+	                <tipos:Competencia>2026-06-28</tipos:Competencia> 
+	                <tipos:Servico> 
+	                    <tipos:Valores> 
+	                        <tipos:ValorServicos>326.26</tipos:ValorServicos> 
+	                        <tipos:ValorIss>0.00</tipos:ValorIss>
+	                        <tipos:Aliquota>0.0411</tipos:Aliquota> 
+	                    </tipos:Valores> 
+	                    <tipos:IssRetido>2</tipos:IssRetido> 
+	                    <tipos:ItemListaServico>1.01</tipos:ItemListaServico> 
+	                    <tipos:CodigoTributacaoMunicipio>1.01 / 620150101</tipos:CodigoTributacaoMunicipio> 
+	                    <tipos:Discriminacao><![CDATA[Prestação de serviços do aplicativo Filho sem Fila.  Parc. 1/12
+Valor aproximado dos tributos: R$41,30
+]]></tipos:Discriminacao> 
+	                    <tipos:CodigoMunicipio>3547809</tipos:CodigoMunicipio> 
+	                    <tipos:MunicipioIncidencia>3547809</tipos:MunicipioIncidencia> 
+	                    <tipos:ExigibilidadeISS>1</tipos:ExigibilidadeISS> 
+	                </tipos:Servico> 
+	                <tipos:Prestador> 
+	                    <tipos:CpfCnpj> 
+	                        <tipos:Cnpj>23439073000180</tipos:Cnpj> 
+	                    </tipos:CpfCnpj> 
+	                    <tipos:InscricaoMunicipal>233246</tipos:InscricaoMunicipal> 
+	                </tipos:Prestador> 
+	                <tipos:TomadorServico> 
+	                    <tipos:IdentificacaoTomador> 
+	                        <tipos:CpfCnpj> 
+	                            <tipos:Cnpj>20432072000115</tipos:Cnpj> 
+	                        </tipos:CpfCnpj> 
+	                    </tipos:IdentificacaoTomador> 
+	                    <tipos:RazaoSocial><![CDATA[SS Elementary School Ltda]]></tipos:RazaoSocial> 
+	                    <tipos:Endereco> 
+	                        <tipos:Endereco><![CDATA[Rua Galeão Carvalhal,  Santo André/SP]]></tipos:Endereco>
+	                        <tipos:Numero>115</tipos:Numero>
+	                        <tipos:Bairro><![CDATA[Jd. Bela Vista]]></tipos:Bairro>
+	                        <tipos:CodigoMunicipio>3547809</tipos:CodigoMunicipio>
+	                        <tipos:Uf>SP</tipos:Uf>
+	                        <tipos:Cep>09041400</tipos:Cep>
+	                    </tipos:Endereco>
+	                </tipos:TomadorServico> 
+	                <tipos:RegimeEspecialTributacao>1</tipos:RegimeEspecialTributacao> 
+	                <tipos:OptanteSimplesNacional>1</tipos:OptanteSimplesNacional> 
+	                <tipos:IncentivoFiscal>2</tipos:IncentivoFiscal> 
+	            </tipos:InfDeclaracaoPrestacaoServico>
+	        </tipos:Rps> 
+	    </tipos:ListaRps> 
+	    </LoteRps>
+</EnviarLoteRpsEnvio>

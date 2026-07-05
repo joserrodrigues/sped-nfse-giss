@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  app:
+    build:
+      args:
+        user: sammy
+        uid: 1000
+      context: ./
+      dockerfile: ./conf/Dockerfile-Dev
+    platform: linux/x86_64
+    image: sped-nfse-giss
+    ports:
+      - 8110:80    
+    container_name: sped-nfse-giss
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - sped-nfse-giss
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
+
+volumes:
+  cache:
+    driver: local
+
+networks:
+  sped-nfse-giss:
+    driver: bridge
+  
+  

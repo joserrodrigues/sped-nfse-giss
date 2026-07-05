@@ -21,7 +21,7 @@ use NFePHP\Common\Exception\SoapException;
 use NFePHP\Common\Exception\RuntimeException;
 use NFePHP\Common\Strings;
 use League\Flysystem\Filesystem;
-use League\Flysystem\Adapter\Local;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use Psr\Log\LoggerInterface;
 
 abstract class SoapBase implements SoapInterface
@@ -99,7 +99,7 @@ abstract class SoapBase implements SoapInterface
      */
     protected $disableCertValidation = false;
     /**
-     * @var \League\Flysystem\Adapter\Local
+     * @var \League\Flysystem\Local\LocalFilesystemAdapter
      */
     protected $adapter;
     /**
@@ -249,8 +249,8 @@ abstract class SoapBase implements SoapInterface
      * @param string $folder
      */
     protected function setLocalFolder($folder = '')
-    {
-        $this->adapter = new Local($folder);
+    {				
+        $this->adapter = new LocalFilesystemAdapter($folder);
         $this->filesystem = new Filesystem($this->adapter);
     }
 
@@ -387,7 +387,6 @@ abstract class SoapBase implements SoapInterface
         $this->prifile = $this->certsdir. Strings::randomString(10).'.pem';
         $this->pubfile = $this->certsdir . Strings::randomString(10).'.pem';
         $this->certfile = $this->certsdir . Strings::randomString(10).'.pem';
-        $ret = true;
         $private = $this->certificate->privateKey;
         if ($this->encriptPrivateKey) {
             //cria uma senha temporária ALEATÓRIA para salvar a chave primaria
@@ -401,19 +400,17 @@ abstract class SoapBase implements SoapInterface
                 $this->temppass
             );
         }
-        $ret &= $this->filesystem->put(
-            $this->prifile,
-            $private
-        );
-        $ret &= $this->filesystem->put(
-            $this->pubfile,
-            $this->certificate->publicKey
-        );
-        $ret &= $this->filesystem->put(
-            $this->certfile,
-            $private."{$this->certificate}"
-        );
-        if (!$ret) {
+        try {
+            $this->filesystem->write($this->prifile, $private);
+            $this->filesystem->write(
+                $this->pubfile,
+                $this->certificate->publicKey
+            );
+            $this->filesystem->write(
+                $this->certfile,
+                $private . "{$this->certificate}"
+            );
+        } catch (\Exception $e) {
             throw new RuntimeException(
                 'Unable to save temporary key files in folder.'
             );
@@ -425,37 +422,30 @@ abstract class SoapBase implements SoapInterface
      */
     public function removeTemporarilyFiles()
     {
-        $contents = $this->filesystem->listContents($this->certsdir, true);
-        //define um limite de $waitingTime min, ou seja qualquer arquivo criado a mais
-        //de $waitingTime min será removido
-        //NOTA: quando ocorre algum erro interno na execução do script, alguns
-        //arquivos temporários podem permanecer
-        //NOTA: O tempo default é de 45 minutos e pode ser alterado diretamente nas
-        //propriedades da classe, esse tempo entre 5 a 45 min é recomendável pois
-        //podem haver processos concorrentes para um mesmo usuário. Esses processos
-        //como o DFe podem ser mais longos, dependendo a forma que o aplicativo
-        //utilize a API. Outra solução para remover arquivos "perdidos" pode ser
-        //encontrada oportunamente.
-        $dt = new \DateTime();
-        $tint = new \DateInterval("PT".$this->waitingTime."M");
-        $tint->invert = 1;
-        $tsLimit = $dt->add($tint)->getTimestamp();
-        foreach ($contents as $item) {
-            if ($item['type'] == 'file') {
-                if ($item['path'] == $this->prifile
-                    || $item['path'] == $this->pubfile
-                    || $item['path'] == $this->certfile
-                ) {
-                    $this->filesystem->delete($item['path']);
-                    continue;
-                }
-                $timestamp = $this->filesystem->getTimestamp($item['path']);
-                if ($timestamp < $tsLimit) {
-                    //remove arquivos criados a mais de 45 min
-                    $this->filesystem->delete($item['path']);
-                }
-            }
-        }
+				if (!empty($this->certsdir)) {
+					$contents = $this->filesystem->listContents($this->certsdir, true);
+					$dt = new \DateTime();
+					$tint = new \DateInterval("PT".$this->waitingTime."M");
+					$tint->invert = 1;
+					$tsLimit = $dt->add($tint)->getTimestamp();
+					foreach ($contents as $item) {
+							if (!$item->isFile()) {
+									continue;
+							}
+							$path = $item->path();
+							if ($path == $this->prifile
+									|| $path == $this->pubfile
+									|| $path == $this->certfile
+							) {
+									$this->filesystem->delete($path);
+									continue;
+							}
+							$timestamp = $this->filesystem->lastModified($path);
+							if ($timestamp < $tsLimit) {
+									$this->filesystem->delete($path);
+							}
+					}
+				}
     }
     
     /**
@@ -478,11 +468,11 @@ abstract class SoapBase implements SoapInterface
         $now = \DateTime::createFromFormat('U.u', number_format(microtime(true), 6, '.', ''));
         $time = substr($now->format("ymdHisu"), 0, 16);
         try {
-            $this->filesystem->put(
+            $this->filesystem->write(
                 $this->debugdir . $time . "_" . $operation . "_sol.txt",
                 $request
             );
-            $this->filesystem->put(
+            $this->filesystem->write(
                 $this->debugdir . $time . "_" . $operation . "_res.txt",
                 $response
             );
