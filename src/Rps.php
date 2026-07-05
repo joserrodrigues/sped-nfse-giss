@@ -62,11 +62,11 @@ class Rps implements RpsInterface
      */
     public function render()
     {
-				$fac = new FactoryV4($this->std);
-				if (!empty($this->config)) {
-					$fac->addConfig($this->config);
-				}
-				return $fac->render();
+                $fac = new FactoryV4($this->std);
+        if (!empty($this->config)) {
+            $fac->addConfig($this->config);
+        }
+                return $fac->render();
     }
 
     /**

@@ -249,7 +249,7 @@ abstract class SoapBase implements SoapInterface
      * @param string $folder
      */
     protected function setLocalFolder($folder = '')
-    {				
+    {
         $this->adapter = new LocalFilesystemAdapter($folder);
         $this->filesystem = new Filesystem($this->adapter);
     }
@@ -422,30 +422,30 @@ abstract class SoapBase implements SoapInterface
      */
     public function removeTemporarilyFiles()
     {
-				if (!empty($this->certsdir)) {
-					$contents = $this->filesystem->listContents($this->certsdir, true);
-					$dt = new \DateTime();
-					$tint = new \DateInterval("PT".$this->waitingTime."M");
-					$tint->invert = 1;
-					$tsLimit = $dt->add($tint)->getTimestamp();
-					foreach ($contents as $item) {
-							if (!$item->isFile()) {
-									continue;
-							}
-							$path = $item->path();
-							if ($path == $this->prifile
-									|| $path == $this->pubfile
-									|| $path == $this->certfile
-							) {
-									$this->filesystem->delete($path);
-									continue;
-							}
-							$timestamp = $this->filesystem->lastModified($path);
-							if ($timestamp < $tsLimit) {
-									$this->filesystem->delete($path);
-							}
-					}
-				}
+        if (!empty($this->certsdir)) {
+            $contents = $this->filesystem->listContents($this->certsdir, true);
+            $dt = new \DateTime();
+            $tint = new \DateInterval("PT".$this->waitingTime."M");
+            $tint->invert = 1;
+            $tsLimit = $dt->add($tint)->getTimestamp();
+            foreach ($contents as $item) {
+                if (!$item->isFile()) {
+                            continue;
+                }
+                    $path = $item->path();
+                if ($path == $this->prifile
+                            || $path == $this->pubfile
+                            || $path == $this->certfile
+                                ) {
+                                $this->filesystem->delete($path);
+                                continue;
+                }
+                                $timestamp = $this->filesystem->lastModified($path);
+                if ($timestamp < $tsLimit) {
+                    $this->filesystem->delete($path);
+                }
+            }
+        }
     }
     
     /**

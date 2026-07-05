@@ -57,25 +57,25 @@ class Tools extends BaseTools
             $content .= $rps->render();
         }
 
-				$contentmsg = "<EnviarLoteRpsEnvio xmlns=\"http://www.giss.com.br/enviar-lote-rps-envio-v2_04.xsd\""
-						. " xmlns:tipos=\"http://www.giss.com.br/tipos-v2_04.xsd\">"
-						. "<LoteRps Id=\"$lote\" versao=\"2.04\">"
-						. "<tipos:NumeroLote>$lote</tipos:NumeroLote>"
-						. "<tipos:Prestador>"
-								. "<tipos:CpfCnpj>"
-										. "<tipos:Cnpj>" . $this->config->cnpj . "</tipos:Cnpj>"
-								. "</tipos:CpfCnpj>"
-								. "<tipos:InscricaoMunicipal>" . $this->config->im . "</tipos:InscricaoMunicipal>"
-						. "</tipos:Prestador>"
-						. "<tipos:QuantidadeRps>$no_of_rps_in_lot</tipos:QuantidadeRps>"
-						. "<tipos:ListaRps>"
-						. $content
-						. "</tipos:ListaRps>"
-						. "</LoteRps>"
-						. "</EnviarLoteRpsEnvio>";
+                $contentmsg = "<EnviarLoteRpsEnvio xmlns=\"http://www.giss.com.br/enviar-lote-rps-envio-v2_04.xsd\""
+                        . " xmlns:tipos=\"http://www.giss.com.br/tipos-v2_04.xsd\">"
+                        . "<LoteRps Id=\"$lote\" versao=\"2.04\">"
+                        . "<tipos:NumeroLote>$lote</tipos:NumeroLote>"
+                        . "<tipos:Prestador>"
+                                . "<tipos:CpfCnpj>"
+                                        . "<tipos:Cnpj>" . $this->config->cnpj . "</tipos:Cnpj>"
+                                . "</tipos:CpfCnpj>"
+                                . "<tipos:InscricaoMunicipal>" . $this->config->im . "</tipos:InscricaoMunicipal>"
+                        . "</tipos:Prestador>"
+                        . "<tipos:QuantidadeRps>$no_of_rps_in_lot</tipos:QuantidadeRps>"
+                        . "<tipos:ListaRps>"
+                        . $content
+                        . "</tipos:ListaRps>"
+                        . "</LoteRps>"
+                        . "</EnviarLoteRpsEnvio>";
 
 
-				$contentmsg = $this->signAllRps204InLote($contentmsg);
+                $contentmsg = $this->signAllRps204InLote($contentmsg);
 
         $content = Signer::sign(
             $this->certificate,
@@ -87,7 +87,7 @@ class Tools extends BaseTools
             'EnviarLoteRpsEnvio'
         );
         $content = str_replace(['<?xml version="1.0"?>', '<?xml version="1.0" encoding="UTF-8"?>'], '', $content);
-				Validator::isValid($contentmsg, $this->xsdpath . "/enviar-lote-rps-envio-v2_04.xsd");
+                Validator::isValid($contentmsg, $this->xsdpath . "/enviar-lote-rps-envio-v2_04.xsd");
         return $this->send($content, $operation);
     }
 
@@ -149,14 +149,14 @@ class Tools extends BaseTools
     public function consultarLoteRps($protocolo)
     {
 
-				$operation = 'ConsultarLoteRps';
-				$content = "<ConsultarLoteRpsEnvio "
-						. "xmlns=\"http://www.giss.com.br/consultar-lote-rps-envio-v2_04.xsd\" "
-						. "xmlns:tipos=\"http://www.giss.com.br/tipos-v2_04.xsd\">"
-						. $this->buildPrestador204()
-						. "<Protocolo>$protocolo</Protocolo>"
-						. "</ConsultarLoteRpsEnvio>";
-				$xsd = '/consultar-lote-rps-envio-v2_04.xsd';
+                $operation = 'ConsultarLoteRps';
+                $content = "<ConsultarLoteRpsEnvio "
+                        . "xmlns=\"http://www.giss.com.br/consultar-lote-rps-envio-v2_04.xsd\" "
+                        . "xmlns:tipos=\"http://www.giss.com.br/tipos-v2_04.xsd\">"
+                        . $this->buildPrestador204()
+                        . "<Protocolo>$protocolo</Protocolo>"
+                        . "</ConsultarLoteRpsEnvio>";
+                $xsd = '/consultar-lote-rps-envio-v2_04.xsd';
 
         //assinatura dos dados
         $content = Signer::sign(
@@ -183,20 +183,20 @@ class Tools extends BaseTools
      */
     public function consultarNfse($dini, $dfim, $tomadorCnpj = null, $tomadorCpf = null, $tomadorIM = null)
     {
-				$operation = 'ConsultarNfseServicoPrestado';
-				$content = "<ConsultarNfseServicoPrestadoEnvio "
-					. "xmlns=\"http://www.giss.com.br/consultar-nfse-servico-prestado-envio-v2_04.xsd\" "
-					. "xmlns:tipos=\"http://www.giss.com.br/tipos-v2_04.xsd\">"
-					. $this->buildPrestador204()
-					. "<PeriodoEmissao>"
-					. "<DataInicial>$dini</DataInicial>"
-					. "<DataFinal>$dfim</DataFinal>"
-					. "</PeriodoEmissao>"
-					. $this->buildTomador204($tomadorCnpj, $tomadorCpf, $tomadorIM)
-					. "<Pagina>1</Pagina>"
-					. "</ConsultarNfseServicoPrestadoEnvio>";
-				$signTag = 'ConsultarNfseServicoPrestadoEnvio';
-				$xsd = '/consultar-nfse-servico-prestado-envio-v2_04.xsd';       
+                $operation = 'ConsultarNfseServicoPrestado';
+                $content = "<ConsultarNfseServicoPrestadoEnvio "
+                    . "xmlns=\"http://www.giss.com.br/consultar-nfse-servico-prestado-envio-v2_04.xsd\" "
+                    . "xmlns:tipos=\"http://www.giss.com.br/tipos-v2_04.xsd\">"
+                    . $this->buildPrestador204()
+                    . "<PeriodoEmissao>"
+                    . "<DataInicial>$dini</DataInicial>"
+                    . "<DataFinal>$dfim</DataFinal>"
+                    . "</PeriodoEmissao>"
+                    . $this->buildTomador204($tomadorCnpj, $tomadorCpf, $tomadorIM)
+                    . "<Pagina>1</Pagina>"
+                    . "</ConsultarNfseServicoPrestadoEnvio>";
+                $signTag = 'ConsultarNfseServicoPrestadoEnvio';
+                $xsd = '/consultar-nfse-servico-prestado-envio-v2_04.xsd';
 
         //assinatura dos dados
         $content = Signer::sign(

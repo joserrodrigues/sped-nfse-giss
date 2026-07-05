@@ -116,7 +116,7 @@ class Tools
     public function send($message, $operation)
     {
         
-				$action = 'http://nfse.abrasf.org.br/' . $operation;        
+                $action = 'http://nfse.abrasf.org.br/' . $operation;
         $url = $this->wsobj->homologacao;
         if ($this->environment === 'producao') {
             $url = $this->wsobj->producao;
@@ -132,19 +132,19 @@ class Tools
             $this->soap = new SoapCurl($this->certificate);
         }
         $msgSize = strlen($request);
-				$parameters = [
-					"Content-Type: text/xml; charset=utf-8",
-					"SOAPAction: \"$action\"",
-					"Content-length: $msgSize"
-				];				
+                $parameters = [
+                    "Content-Type: text/xml; charset=utf-8",
+                    "SOAPAction: \"$action\"",
+                    "Content-length: $msgSize"
+                ];
 
-        $response = (string)$this->soap->send(
-            $operation,
-            $url,
-            $action,
-            $request,
-            $parameters
-        );
+                $response = (string)$this->soap->send(
+                    $operation,
+                    $url,
+                    $action,
+                    $request,
+                    $parameters
+                );
         return $this->extractContentFromResponse($response, $operation);
     }
 
@@ -178,32 +178,31 @@ class Tools
      */
     protected function createSoapRequest($message, $operation)
     {
-				$cabecalho = $this->createCabecalho();
-				$requestElement = $operation . 'Request';
-				$ns = 'http://nfse.abrasf.org.br';
+                $cabecalho = $this->createCabecalho();
+                $requestElement = $operation . 'Request';
+                $ns = 'http://nfse.abrasf.org.br';
 
-				return "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-					. "<soapenv:Header/>"
-					. "<soapenv:Body>"
-					. "<{$requestElement} xmlns=\"{$ns}\">"
-					. "<nfseCabecMsg xmlns=\"\">"
-					. $this->escapeXmlForSoapParameter($cabecalho)
-					. "</nfseCabecMsg>"
-					. "<nfseDadosMsg xmlns=\"\">"
-					. $this->escapeXmlForSoapParameter($message)
-					. "</nfseDadosMsg>"
-					. "</{$requestElement}>"
-					. "</soapenv:Body>"
-					. "</soapenv:Envelope>";
+                return "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+                    . "<soapenv:Header/>"
+                    . "<soapenv:Body>"
+                    . "<{$requestElement} xmlns=\"{$ns}\">"
+                    . "<nfseCabecMsg xmlns=\"\">"
+                    . $this->escapeXmlForSoapParameter($cabecalho)
+                    . "</nfseCabecMsg>"
+                    . "<nfseDadosMsg xmlns=\"\">"
+                    . $this->escapeXmlForSoapParameter($message)
+                    . "</nfseDadosMsg>"
+                    . "</{$requestElement}>"
+                    . "</soapenv:Body>"
+                    . "</soapenv:Envelope>";
     }
 
     protected function createCabecalho()
     {
-				return "<cabecalho versao=\"2.04\" "
-					. "xmlns=\"http://www.giss.com.br/cabecalho-v2_04.xsd\">"
-					. "<versaoDados>2.04</versaoDados>"
-					. "</cabecalho>";
-
+                return "<cabecalho versao=\"2.04\" "
+                    . "xmlns=\"http://www.giss.com.br/cabecalho-v2_04.xsd\">"
+                    . "<versaoDados>2.04</versaoDados>"
+                    . "</cabecalho>";
     }
 
     protected function escapeXmlForSoapParameter($xml)
