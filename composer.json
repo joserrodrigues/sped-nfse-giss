@@ -44,12 +44,12 @@
     },
     "autoload": {
         "psr-4": {
-          "NFePHP\\NFSeGinfes\\": "src/"
+          "NFePHP\\NFSeGiss\\": "src/"
         } 
     },
     "autoload-dev": {
         "psr-4": {
-            "NFePHP\\NFSeGinfes\\Tests\\": "tests/"
+            "NFePHP\\NFSeGiss\\Tests\\": "tests/"
         }
     },
     "scripts": {

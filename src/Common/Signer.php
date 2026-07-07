@@ -1,12 +1,12 @@
 <?php
 
-namespace NFePHP\NFSeGinfes\Common;
+namespace NFePHP\NFSeGiss\Common;
 
 /**
  * Class for signing XML in Ginfes Standard NFSe
  *
  * @category  NFePHP
- * @package   NFePHP\NFSeGinfes
+ * @package   NFePHP\NFSeGiss
  * @copyright NFePHP Copyright (c) 2020
  * @license   http://www.gnu.org/licenses/lgpl.txt LGPLv3+
  * @license   https://opensource.org/licenses/MIT MIT

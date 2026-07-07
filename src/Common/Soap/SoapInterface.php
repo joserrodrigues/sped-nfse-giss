@@ -1,12 +1,12 @@
 <?php
 
-namespace NFePHP\NFSeGinfes\Common\Soap;
+namespace NFePHP\NFSeGiss\Common\Soap;
 
 /**
  * Soap class interface
  *
  * @category  NFePHP
- * @package   NFePHP\NFSeGinfes
+ * @package   NFePHP\NFSeGiss
  * @copyright NFePHP Copyright (c) 2020
  * @license   http://www.gnu.org/licenses/lgpl.txt LGPLv3+
  * @license   https://opensource.org/licenses/MIT MIT

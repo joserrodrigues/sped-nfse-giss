@@ -1,13 +1,13 @@
 <?php
 
-namespace NFePHP\NFSeGinfes\Common;
+namespace NFePHP\NFSeGiss\Common;
 
 /**
  * Class for identification of eletronic documents in xml
  * used for comunications an convertion to other formats
  *
  * @category  library
- * @package   NFePHP\NFSeGinfes
+ * @package   NFePHP\NFSeGiss
  * @copyright NFePHP Copyright (c) 2020
  * @license   http://www.gnu.org/licenses/lgpl.txt LGPLv3+
  * @license   https://opensource.org/licenses/MIT MIT

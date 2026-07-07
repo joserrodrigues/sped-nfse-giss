@@ -1,12 +1,12 @@
 <?php
 
-namespace NFePHP\NFSeGinfes\Common;
+namespace NFePHP\NFSeGiss\Common;
 
 /**
  * Auxiar Tools Class for comunications with NFSe webserver in Ginfes Standard
  *
  * @category  NFePHP
- * @package   NFePHP\NFSeGinfes
+ * @package   NFePHP\NFSeGiss
  * @copyright NFePHP Copyright (c) 2020
  * @license   http://www.gnu.org/licenses/lgpl.txt LGPLv3+
  * @license   https://opensource.org/licenses/MIT MIT
@@ -17,14 +17,15 @@ namespace NFePHP\NFSeGinfes\Common;
 
 use NFePHP\Common\Certificate;
 use NFePHP\Common\DOMImproved as Dom;
-use NFePHP\NFSeGinfes\Common\Soap\SoapCurl;
-use NFePHP\NFSeGinfes\Common\Soap\SoapInterface;
+use NFePHP\NFSeGiss\Common\Soap\SoapCurl;
+use NFePHP\NFSeGiss\Common\Soap\SoapInterface;
+use NFePHP\NFSeGiss\ConfigInfo;
 
 class Tools
 {
     public $lastRequest;
-
-    protected $config;
+	
+    protected ConfigInfo $config;
     protected $prestador;
     protected $certificate;
     protected $wsobj;
@@ -34,22 +35,25 @@ class Tools
 
     /**
      * Constructor
-     * @param string $config
-     * @param Certificate $cert
+     * @param ConfigInfo $config
      */
-    public function __construct($config, Certificate $cert)
+    public function __construct(ConfigInfo $config)
     {
-        $this->config = json_decode($config);
-        $this->certificate = $cert;
-        $this->wsobj = $this->loadWsobj($this->config->cmun);
+        $this->config = $config;
+        $this->wsobj = $this->loadWsobj($this->config->getCmun());
         if (!empty($this->wsobj->version)) {
             $this->version = (string)$this->wsobj->version;
         }
         $this->environment = 'homologacao';
-        if ($this->config->tpamb === 1) {
+        if ($this->config->getTpamb() === 1) {
             $this->environment = 'producao';
         }
     }
+
+		public function setCertificate(Certificate $cert)
+		{
+			$this->certificate = $cert;
+		}
 
     /**
      * load webservice parameters

@@ -1,12 +1,12 @@
 <?php
 
-namespace NFePHP\NFSeGinfes\Common;
+namespace NFePHP\NFSeGiss\Common;
 
 /**
  * Class for RPS XML convertion (ABRASF v4 / GISS v2.04)
  *
  * @category  NFePHP
- * @package   NFePHP\NFSeGinfes
+ * @package   NFePHP\NFSeGiss
  * @copyright NFePHP Copyright (c) 2020
  * @license   http://www.gnu.org/licenses/lgpl.txt LGPLv3+
  * @license   https://opensource.org/licenses/MIT MIT
@@ -18,6 +18,7 @@ namespace NFePHP\NFSeGinfes\Common;
 use DOMElement;
 use DOMNode;
 use NFePHP\Common\DOMImproved as Dom;
+use NFePHP\NFSeGiss\ConfigInfo;
 use stdClass;
 
 class FactoryV4
@@ -43,7 +44,7 @@ class FactoryV4
     protected $rps;
 
     /**
-     * @var \stdClass
+     * @var ConfigInfo
      */
     protected $config;
 
@@ -64,9 +65,9 @@ class FactoryV4
 
     /**
      * Add config
-     * @param \stdClass $config
+     * @param ConfigInfo $config
      */
-    public function addConfig($config)
+    public function addConfig(ConfigInfo $config)
     {
         $this->config = $config;
     }
@@ -202,15 +203,15 @@ class FactoryV4
 
         if (!empty($prestador->cpfcnpj)) {
             $this->appendCpfCnpj($cpfcnpj, $prestador->cpfcnpj);
-        } elseif (!empty($this->config->cnpj)) {
-            $this->dom->addChild($cpfcnpj, 'tipos:Cnpj', $this->config->cnpj, true);
+        } elseif (!empty($this->config->getCnpj())) {
+            $this->dom->addChild($cpfcnpj, 'tipos:Cnpj', $this->config->getCnpj(), true);
         }
 
         $node->appendChild($cpfcnpj);
         $this->dom->addChild(
             $node,
             'tipos:InscricaoMunicipal',
-            !empty($prestador->inscricaomunicipal) ? $prestador->inscricaomunicipal : $this->config->im,
+            !empty($prestador->inscricaomunicipal) ? $prestador->inscricaomunicipal : $this->config->getIm(),
             false
         );
         $parent->appendChild($node);

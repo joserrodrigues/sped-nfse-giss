@@ -1,22 +1,22 @@
 <?php
 
-namespace NFePHP\NFSeGinfes\Tests;
+namespace NFePHP\NFSeGiss\Tests;
 
-use NFePHP\NFSeGinfes\Rps;
+use NFePHP\NFSeGiss\Rps;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
 use NFePHP\Common\Certificate;
 
-use NFePHP\NFSeGinfes\Tests\SoapFake;
-use NFePHP\NFSeGinfes\Common\Soap\SoapInterface;
-use NFePHP\NFSeGinfes\Common\Soap\SoapCurl;
-use NFePHP\NFSeGinfes\Tools;
+use NFePHP\NFSeGiss\ConfigInfo;
+use NFePHP\NFSeGiss\Tools;
 
 class RpsTest extends TestCase
 {
     public $std;
     public $fixturesPath;
+
+		private bool $fake = true;
     
     public function __construct()
     {
@@ -27,7 +27,7 @@ class RpsTest extends TestCase
     public function testCanInstantiate()
     {
 				$rps = $this->loadFakeRPS();
-        $this->assertInstanceOf('NFePHP\NFSeGinfes\Rps', $rps);
+        $this->assertInstanceOf('NFePHP\NFSeGiss\Rps', $rps);
     }
 
     public function testCannotInstantiateWithoutData()
@@ -41,9 +41,10 @@ class RpsTest extends TestCase
 
 		public function testRecepcionarLoteRps(){
 				
-				$rps = $this->loadFakeRPS();
-			
-				$tools = $this->createToolsWithFakeSoap();
+				$rps = $this->loadFakeRPS();				
+
+				$tools = new Tools($this->loadConfig());
+				$tools->loadConfig($this->fake);
 
 				$lote = time();
 				$response = $tools->recepcionarLoteRps([$rps], $lote);
@@ -73,7 +74,8 @@ class RpsTest extends TestCase
 		{
 			$protocolo = '122646';
 
-			$tools = $this->createToolsWithFakeSoap();
+			$tools = new Tools($this->loadConfig());
+			$tools->loadConfig($this->fake);
 
 			$response = $tools->consultarLoteRps($protocolo);
 
@@ -102,7 +104,9 @@ class RpsTest extends TestCase
 		{
 			$dini = '2026-01-01';
 			$dfim = '2026-07-31';
-			$tools = $this->createToolsWithFakeSoap();
+
+			$tools = new Tools($this->loadConfig());
+			$tools->loadConfig($this->fake);
 
 			$response = $tools->consultarNfse($dini, $dfim);
 
@@ -124,7 +128,8 @@ class RpsTest extends TestCase
 
 		public function testConsultarNfsePorRps()
 		{
-			$tools = $this->createToolsWithFakeSoap();
+			$tools = new Tools($this->loadConfig());
+			$tools->loadConfig($this->fake);
 
 			$response = $tools->consultarNfsePorRps(15877, '001', 1);
 
@@ -151,7 +156,9 @@ class RpsTest extends TestCase
 		public function testCancelarNfse()
 		{
 			$numero = 12345;
-			$tools = $this->createToolsWithFakeSoap();
+			
+			$tools = new Tools($this->loadConfig());
+			$tools->loadConfig($this->fake);
 
 			$response = $tools->cancelarNfse($numero);
 
@@ -257,42 +264,19 @@ class RpsTest extends TestCase
 		return $rps;
 	}
 
-	private function loadConfig(): string {
+	private function loadConfig(): ConfigInfo {
 		$config = [
 			'cnpj' => '81089200000164',
 			'im' => '1231331',
 			'cmun' => '3547809',
 			'razao' => 'Dev Software LTDA',
-			'tpamb' => 2
+			'tpamb' => 2,
+			'caminhoCertificado' => __DIR__ . '/fixtures/expired_certificate.pfx',
+			'senhaCertificado' => 'associacao'
 		];
 
-		$configJson = json_encode($config);
-		return $configJson;
-	}
-
-	private function createToolsWithFakeSoap(): Tools
-	{
-		//* Fake Connection
-		$content = file_get_contents(__DIR__ . '/fixtures/expired_certificate.pfx');
-		$cert = Certificate::readPfx($content, 'associacao');
-
-		$tools = new Tools($this->loadConfig(), $cert);
-
-		$soap = new SoapFake();
-		$soap->disableCertValidation(true);		
-		/*/
-		$content = file_get_contents(__DIR__ . '/fixtures/eCNPJ_School.pfx');
-
-		$cert = Certificate::readPfx($content, 'password');
-
-		$tools = new Tools($this->loadConfig(), $cert);
-
-		$soap = new SoapCurl();
-		//*/
-
-		$tools->loadSoapClass($soap);
-
-		return $tools;
+		return new ConfigInfo($config['cnpj'], $config['im'], $config['cmun'], $config['razao'], 
+								$config['tpamb'], $config['caminhoCertificado'], $config['senhaCertificado']);
 	}
 
 	private function assertAbrasf204SoapRequest(Tools $tools, string $requestElement): void

@@ -1,6 +1,6 @@
 <?php
 
-namespace NFePHP\NFSeGinfes\Common;
+namespace NFePHP\NFSeGiss\Common;
 
 /**
  * Class FakePretty shows event and fake comunication data

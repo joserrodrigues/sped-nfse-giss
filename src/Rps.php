@@ -1,12 +1,12 @@
 <?php
 
-namespace NFePHP\NFSeGinfes;
+namespace NFePHP\NFSeGiss;
 
 /**
  * Class for RPS construction and validation of data
  *
  * @category  NFePHP
- * @package   NFePHP\NFSeGinfes
+ * @package   NFePHP\NFSeGiss
  * @copyright NFePHP Copyright (c) 2020
  * @license   http://www.gnu.org/licenses/lgpl.txt LGPLv3+
  * @license   https://opensource.org/licenses/MIT MIT
@@ -16,9 +16,10 @@ namespace NFePHP\NFSeGinfes;
  */
 
 use stdClass;
-use NFePHP\NFSeGinfes\RpsInterface;
+use NFePHP\NFSeGiss\RpsInterface;
 use JsonSchema\Validator as JsonValid;
-use NFePHP\NFSeGinfes\Common\FactoryV4;
+use NFePHP\NFSeGiss\Common\FactoryV4;
+use NFePHP\NFSeGiss\ConfigInfo;
 
 class Rps implements RpsInterface
 {
@@ -35,7 +36,7 @@ class Rps implements RpsInterface
      */
     protected $jsonschema;
     /**
-     * @var stdClass
+     * @var ConfigInfo
      */
     private $config;
 
@@ -52,7 +53,7 @@ class Rps implements RpsInterface
      * Add config
      * @param stdClass $config
      */
-    public function config(stdClass $config)
+    public function config(ConfigInfo $config)
     {
         $this->config = $config;
     }

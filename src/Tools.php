@@ -1,12 +1,12 @@
 <?php
 
-namespace NFePHP\NFSeGinfes;
+namespace NFePHP\NFSeGiss;
 
 /**
  * Class for comunications with NFSe webserver in Ginfes Standard
  *
  * @category  NFePHP
- * @package   NFePHP\NFSeGinfes
+ * @package   NFePHP\NFSeGiss
  * @copyright NFePHP Copyright (c) 2020
  * @license   http://www.gnu.org/licenses/lgpl.txt LGPLv3+
  * @license   https://opensource.org/licenses/MIT MIT
@@ -17,8 +17,11 @@ namespace NFePHP\NFSeGinfes;
 
 use NFePHP\Common\Certificate;
 use NFePHP\Common\Validator;
-use NFePHP\NFSeGinfes\Common\Signer;
-use NFePHP\NFSeGinfes\Common\Tools as BaseTools;
+use NFePHP\NFSeGiss\Common\Signer;
+use NFePHP\NFSeGiss\Common\Tools as BaseTools;
+use NFePHP\NFSeGiss\Common\Soap\SoapInterface;
+use NFePHP\NFSeGiss\Common\Soap\SoapFake;
+use NFePHP\NFSeGiss\Common\Soap\SoapCurl;
 
 class Tools extends BaseTools
 {
@@ -28,14 +31,30 @@ class Tools extends BaseTools
 
     protected $xsdpath;
 
-    public function __construct($config, Certificate $cert)
+    public function __construct(ConfigInfo $config)
     {
-        parent::__construct($config, $cert);
+        parent::__construct($config);
         $path = realpath(
             __DIR__ . '/../storage/schemes'
         );
         $this->xsdpath = $path;
     }
+
+	public function loadConfig(bool $fake = false)
+	{
+		$content = file_get_contents($this->config->getCaminhoCertificado());
+		$cert = Certificate::readPfx($content, $this->config->getSenhaCertificado());
+		$this->setCertificate($cert);
+		
+		if ($fake) {
+			$soap = new SoapFake();
+			$soap->disableCertValidation(true);
+		} else {
+			$soap = new SoapCurl();
+		}
+
+		$this->loadSoapClass($soap);
+	}		
 
     /**
      * Envia LOTE de RPS para emissão de NFSe (ASSINCRONO)
@@ -63,9 +82,9 @@ class Tools extends BaseTools
                         . "<tipos:NumeroLote>$lote</tipos:NumeroLote>"
                         . "<tipos:Prestador>"
                                 . "<tipos:CpfCnpj>"
-                                        . "<tipos:Cnpj>" . $this->config->cnpj . "</tipos:Cnpj>"
+                                        . "<tipos:Cnpj>" . $this->config->getCnpj() . "</tipos:Cnpj>"
                                 . "</tipos:CpfCnpj>"
-                                . "<tipos:InscricaoMunicipal>" . $this->config->im . "</tipos:InscricaoMunicipal>"
+                                . "<tipos:InscricaoMunicipal>" . $this->config->getIm() . "</tipos:InscricaoMunicipal>"
                         . "</tipos:Prestador>"
                         . "<tipos:QuantidadeRps>$no_of_rps_in_lot</tipos:QuantidadeRps>"
                         . "<tipos:ListaRps>"
@@ -269,10 +288,10 @@ class Tools extends BaseTools
             . "<tipos:IdentificacaoNfse>"
             . "<tipos:Numero>$numero</tipos:Numero>"
             . "<tipos:CpfCnpj>"
-            . "<tipos:Cnpj>" . $this->config->cnpj . "</tipos:Cnpj>"
+            . "<tipos:Cnpj>" . $this->config->getCnpj() . "</tipos:Cnpj>"
             . "</tipos:CpfCnpj>"
-            . "<tipos:InscricaoMunicipal>" . $this->config->im . "</tipos:InscricaoMunicipal>"
-            . "<tipos:CodigoMunicipio>" . $this->config->cmun . "</tipos:CodigoMunicipio>"
+            . "<tipos:InscricaoMunicipal>" . $this->config->getIm() . "</tipos:InscricaoMunicipal>"
+            . "<tipos:CodigoMunicipio>" . $this->config->getCmun() . "</tipos:CodigoMunicipio>"
             . "</tipos:IdentificacaoNfse>"
             . "<tipos:CodigoCancelamento>$codigo</tipos:CodigoCancelamento>"
             . "</tipos:InfPedidoCancelamento>"
@@ -297,9 +316,9 @@ class Tools extends BaseTools
     {
         return "<Prestador>"
             . "<tipos:CpfCnpj>"
-            . "<tipos:Cnpj>" . $this->config->cnpj . "</tipos:Cnpj>"
+            . "<tipos:Cnpj>" . $this->config->getCnpj() . "</tipos:Cnpj>"
             . "</tipos:CpfCnpj>"
-            . "<tipos:InscricaoMunicipal>" . $this->config->im . "</tipos:InscricaoMunicipal>"
+            . "<tipos:InscricaoMunicipal>" . $this->config->getIm() . "</tipos:InscricaoMunicipal>"
             . "</Prestador>";
     }
 

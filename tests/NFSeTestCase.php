@@ -1,6 +1,6 @@
 <?php
 
-namespace NFePHP\NFSeGinfes\Tests;
+namespace NFePHP\NFSeGiss\Tests;
 
 use PHPUnit\Framework\TestCase;
 

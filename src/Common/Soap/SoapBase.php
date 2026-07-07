@@ -1,12 +1,12 @@
 <?php
 
-namespace NFePHP\NFSeGinfes\Common\Soap;
+namespace NFePHP\NFSeGiss\Common\Soap;
 
 /**
  * Soap base class
  *
  * @category  NFePHP
- * @package   NFePHP\NFSeGinfes
+ * @package   NFePHP\NFSeGiss
  * @copyright NFePHP Copyright (c) 2020
  * @license   http://www.gnu.org/licenses/lgpl.txt LGPLv3+
  * @license   https://opensource.org/licenses/MIT MIT
@@ -16,7 +16,7 @@ namespace NFePHP\NFSeGinfes\Common\Soap;
  */
 
 use NFePHP\Common\Certificate;
-use NFePHP\NFSeGinfes\Common\Soap\SoapInterface;
+use NFePHP\NFSeGiss\Common\Soap\SoapInterface;
 use NFePHP\Common\Exception\SoapException;
 use NFePHP\Common\Exception\RuntimeException;
 use NFePHP\Common\Strings;
@@ -429,10 +429,10 @@ abstract class SoapBase implements SoapInterface
             $tint->invert = 1;
             $tsLimit = $dt->add($tint)->getTimestamp();
             foreach ($contents as $item) {
-                if (!$item->isFile()) {
+                if ($item['type'] !== 'file') {
                             continue;
                 }
-                    $path = $item->path();
+                    $path = $item['path'];
                 if ($path == $this->prifile
                             || $path == $this->pubfile
                             || $path == $this->certfile
@@ -440,7 +440,8 @@ abstract class SoapBase implements SoapInterface
                                 $this->filesystem->delete($path);
                                 continue;
                 }
-                                $timestamp = $this->filesystem->lastModified($path);
+								
+								$timestamp = $item['timestamp'];
                 if ($timestamp < $tsLimit) {
                     $this->filesystem->delete($path);
                 }
