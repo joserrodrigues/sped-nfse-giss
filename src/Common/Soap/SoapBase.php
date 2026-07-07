@@ -21,7 +21,7 @@ use NFePHP\Common\Exception\SoapException;
 use NFePHP\Common\Exception\RuntimeException;
 use NFePHP\Common\Strings;
 use League\Flysystem\Filesystem;
-use League\Flysystem\Local\LocalFilesystemAdapter;
+use League\Flysystem\Adapter\Local;
 use Psr\Log\LoggerInterface;
 
 abstract class SoapBase implements SoapInterface
@@ -99,7 +99,7 @@ abstract class SoapBase implements SoapInterface
      */
     protected $disableCertValidation = false;
     /**
-     * @var \League\Flysystem\Local\LocalFilesystemAdapter
+     * @var \League\Flysystem\Adapter\Local
      */
     protected $adapter;
     /**
@@ -250,7 +250,7 @@ abstract class SoapBase implements SoapInterface
      */
     protected function setLocalFolder($folder = '')
     {
-        $this->adapter = new LocalFilesystemAdapter($folder);
+        $this->adapter = new Local($folder);
         $this->filesystem = new Filesystem($this->adapter);
     }
 
