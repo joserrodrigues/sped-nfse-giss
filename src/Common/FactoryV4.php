@@ -306,6 +306,7 @@ class FactoryV4
             isset($val->descontocondicionado) ? $this->formatMoney($val->descontocondicionado) : null,
             false
         );
+        $this->addIbscbs($valnode, isset($val->ibscbs) ? $val->ibscbs : null, $serv);
 
         $node->appendChild($valnode);
         $this->dom->addChild(
@@ -340,6 +341,12 @@ class FactoryV4
         );
         $this->dom->addChild(
             $node,
+            'tipos:CodigoNbs',
+            isset($serv->codigonbs) ? $serv->codigonbs : null,
+            false
+        );
+        $this->dom->addChild(
+            $node,
             'tipos:Discriminacao',
             $serv->discriminacao,
             true
@@ -368,6 +375,72 @@ class FactoryV4
             isset($serv->municipioincidencia) ? $serv->municipioincidencia : null,
             false
         );
+
+        $parent->appendChild($node);
+    }
+
+    /**
+     * Includes IBSCBS TAG in Valores NODE
+     * @param DOMNode $parent
+     * @param stdClass|null $ibscbs
+     * @param stdClass $serv
+     */
+    protected function addIbscbs(DOMNode &$parent, $ibscbs, stdClass $serv)
+    {
+        if (empty($ibscbs)) {
+            return;
+        }
+
+        $node = $this->dom->createElement('tipos:IBSCBS');
+        $this->dom->addChild($node, 'tipos:finNFSe', $ibscbs->finnfse, true);
+        $this->dom->addChild($node, 'tipos:indFinal', $ibscbs->indfinal, true);
+        $this->dom->addChild($node, 'tipos:cIndOp', $ibscbs->cindop, true);
+        $this->dom->addChild(
+            $node,
+            'tipos:tpOper',
+            isset($ibscbs->tpoper) ? $ibscbs->tpoper : null,
+            false
+        );
+        $this->dom->addChild(
+            $node,
+            'tipos:tpEnteGov',
+            isset($ibscbs->tpentegov) ? $ibscbs->tpentegov : null,
+            false
+        );
+        $this->dom->addChild($node, 'tipos:indDest', $ibscbs->inddest, true);
+
+        if (!empty($ibscbs->valores)) {
+            $valores = $ibscbs->valores;
+            $valoresNode = $this->dom->createElement('tipos:valores');
+
+            if (!empty($valores->trib) && !empty($valores->trib->gibscbs)) {
+                $gibscbs = $valores->trib->gibscbs;
+                $tribNode = $this->dom->createElement('tipos:trib');
+                $gibscbsNode = $this->dom->createElement('tipos:gIBSCBS');
+                $this->dom->addChild($gibscbsNode, 'tipos:CST', $gibscbs->cst, true);
+                $this->dom->addChild($gibscbsNode, 'tipos:cClassTrib', $gibscbs->cclasstrib, true);
+                $tribNode->appendChild($gibscbsNode);
+                $valoresNode->appendChild($tribNode);
+            }
+
+            $cLocalidadeIncid = isset($valores->clocalidadeincid)
+                ? $valores->clocalidadeincid
+                : $serv->codigomunicipio;
+            $this->dom->addChild($valoresNode, 'tipos:cLocalidadeIncid', $cLocalidadeIncid, true);
+
+            $pRedutor = isset($valores->predutor)
+                ? $this->formatMoney($valores->predutor)
+                : '0.00';
+            $this->dom->addChild($valoresNode, 'tipos:pRedutor', $pRedutor, true);
+            $this->dom->addChild(
+                $valoresNode,
+                'tipos:vBC',
+                isset($valores->vbc) ? $this->formatMoney($valores->vbc) : null,
+                false
+            );
+
+            $node->appendChild($valoresNode);
+        }
 
         $parent->appendChild($node);
     }
